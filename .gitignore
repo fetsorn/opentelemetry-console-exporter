@@ -1,0 +1,28 @@
+# MacOS
+.DS_Store
+
+# Emacs
+*~
+\#*\#
+
+# Vim
+.swp
+
+#VScode
+.vscode/
+
+# nodejs
+node_modules/
+npm-debug.log
+.nyc_output/
+build/
+
+#backup files
+*--
+*_backup
+
+#log files
+*.log
+
+#istanbul files
+coverage/

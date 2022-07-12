@@ -1,0 +1,66 @@
+{
+  "name": "@fetsorn/opentelemetry-console-exporter",
+  "version": "0.0.1",
+  "description": "OpenTelemetry Console Exporter allows the user to send collected traces to the console.",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "repository": "fetsorn/opentelemetry-console-exporter",
+  "scripts": {
+    "codecov": "nyc report --reporter=json && codecov -f coverage/*.json -p ../../",
+    "lint": "eslint src/*",
+    "fix": "eslint lint",
+    "compile": "tsc",
+    "prepare": "npm run compile",
+    "test": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
+    "pretest": "npm run compile"
+  },
+  "keywords": [
+    "opentelemetry",
+    "nodejs",
+    "tracing"
+  ],
+  "author": "fetsorn",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10"
+  },
+  "files": [
+    "build/src/**/*.js",
+    "build/src/**/*.d.ts",
+    "doc",
+    "LICENSE",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@opentelemetry/api": "1.1.0",
+    "@opentelemetry/core": "1.1.0",
+    "@opentelemetry/resources": "1.1.0",
+    "@opentelemetry/sdk-trace-base": "1.1.0",
+    "@types/mocha": "9.1.0",
+    "@types/node": "18.0.3",
+    "@types/sinon": "10.0.11",
+    "@typescript-eslint/eslint-plugin": "4.11.1",
+    "@typescript-eslint/parser": "4.11.1",
+    "codecov": "3.8.3",
+    "eslint": "7.16.0",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-json": "3.0.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "mocha": "9.2.2",
+    "nyc": "15.1.0",
+    "rimraf": "3.0.2",
+    "sinon": "12.0.1",
+    "ts-mocha": "9.0.2",
+    "typescript": "4.5.4"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.0.0",
+    "@opentelemetry/core": "^1.0.0",
+    "@opentelemetry/resources": "^1.0.0",
+    "@opentelemetry/sdk-trace-base": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
