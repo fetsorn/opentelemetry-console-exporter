@@ -1,4 +1,4 @@
-import { ConsoleExporter } from "../src";
+import { ConsoleExporter } from "../src/object";
 import * as utilsModule from "../src/utils";
 
 import * as types from "@opentelemetry/api";
@@ -111,16 +111,13 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌱:🌰-🌯---------------------------------------------------->  32800ms - customLabel",
-        ],
+        {
+          "a   32800ms customLabel": {
+            args: "",
+            children: { "a   32800ms customLabel": { args: "" } },
+          },
+        },
         consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌰------------------------------------------------------->  32800ms - customLabel",
-        ],
-        consoleDebug.args[1]
       );
     });
 
@@ -177,16 +174,13 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌱:🌰-🌯---------------------------------------------------->  32800ms - my-span",
-        ],
+        {
+          "a   32800ms my-span": {
+            args: "",
+            children: { "a   32800ms my-span": { args: "" } },
+          },
+        },
         consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌰------------------------------------------------------->  32800ms - my-span",
-        ],
-        consoleDebug.args[1]
       );
     });
 
@@ -267,28 +261,18 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌱:🌲-🌰-🌯------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
+        {
+          "a   32800ms my-span": {
+            args: "",
+            children: {
+              "a   32800ms my-span": {
+                args: "",
+                children: { "a   32800ms my-span": { args: "" } },
+              },
+            },
+          },
+        },
         consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌲-🌰---------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[1]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌲------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[2]
       );
     });
 
@@ -324,16 +308,16 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌰:🌯------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
+        {
+          "a   32800ms my-span": {
+            args: "",
+          },
+        },
         consoleDebug.args[0]
       );
     });
 
-    it("should reuse icons", async () => {
+    it("should increment letters", async () => {
       const exporter = new ConsoleExporter({ isDetailed: true });
 
       const readableSpan1 = (): ReadableSpan => {
@@ -373,22 +357,11 @@ describe("Console Exporter", () => {
       });
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
-      assert.deepStrictEqual(
-        [
-          "🌰:🌯------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌰:🌯------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[101]
-      );
+      const keys = Object.keys(consoleDebug.args[0]);
+      assert.equal(keys[0][0], "a");
+      assert.equal(keys[28][0], "z");
+      assert.equal(keys[29][0], "aa");
+      assert.equal(keys[56][0], "az");
     });
   });
 
