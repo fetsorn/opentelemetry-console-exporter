@@ -9,7 +9,7 @@ import {
 } from "@opentelemetry/core";
 
 /* eslint-disable no-console */
-export class ConsoleExporter implements SpanExporter {
+export class ConsoleExporterIcon implements SpanExporter {
   private _min = 127791;
   private _max = 127891;
 

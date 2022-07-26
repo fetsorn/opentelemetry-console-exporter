@@ -1,2 +1,3 @@
 export { ConsoleExporterOptions } from "./types";
-export { ConsoleExporter } from "./flat";
+export { ConsoleExporterIcon } from "./exporterIcon";
+export { ConsoleExporterObject } from "./exporterObject";

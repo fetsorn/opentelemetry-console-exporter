@@ -1,4 +1,4 @@
-import { ConsoleExporter } from "../src/flat";
+import { ConsoleExporterObject } from "../src/exporterObject";
 import * as utilsModule from "../src/utils";
 
 import * as types from "@opentelemetry/api";
@@ -9,36 +9,7 @@ import { ReadableSpan } from "@opentelemetry/sdk-trace-base";
 import * as assert from "assert";
 import * as sinon from "sinon";
 
-describe("Console Exporter", () => {
-  describe("constructor", () => {
-    it("should construct an exporter", async () => {
-      const exporter = new ConsoleExporter({
-        isDetailed: true,
-      });
-
-      assert.ok(exporter);
-      const detail = (await exporter["_isDetailed"]) as boolean;
-      assert.strictEqual(detail, true);
-    });
-
-    it("should construct an exporter", async () => {
-      const exporter = new ConsoleExporter({
-        isDetailed: false,
-      });
-
-      assert.ok(exporter);
-      const detail = (await exporter["_isDetailed"]) as boolean;
-      assert.strictEqual(detail, false);
-    });
-
-    it("should construct exporter without args", async () => {
-      const exporter = new ConsoleExporter({});
-
-      assert.ok(exporter);
-      const detail = (await exporter["_isDetailed"]) as boolean;
-      assert.strictEqual(detail, false);
-    });
-  });
+describe("Console Exporter Object", () => {
 
   describe(".export()", () => {
     let consoleDebug: sinon.SinonSpy;
@@ -55,7 +26,7 @@ describe("Console Exporter", () => {
     });
 
     it("should export short log of spans with custom labels", async () => {
-      const exporter = new ConsoleExporter({});
+      const exporter = new ConsoleExporterObject();
 
       const readableSpan1: ReadableSpan = {
         attributes: {
@@ -111,21 +82,18 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌱:🌰-🌯---------------------------------------------------->  32800ms - customLabel",
-        ],
+        {
+          "a   32800ms customLabel": {
+            args: "",
+            children: { "a   32800ms customLabel": { args: "" } },
+          },
+        },
         consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌰------------------------------------------------------->  32800ms - customLabel",
-        ],
-        consoleDebug.args[1]
       );
     });
 
     it("should export short log of spans with fallback span names", async () => {
-      const exporter = new ConsoleExporter({});
+      const exporter = new ConsoleExporterObject();
 
       const readableSpan1: ReadableSpan = {
         attributes: {},
@@ -177,21 +145,18 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌱:🌰-🌯---------------------------------------------------->  32800ms - my-span",
-        ],
+        {
+          "a   32800ms my-span": {
+            args: "",
+            children: { "a   32800ms my-span": { args: "" } },
+          },
+        },
         consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌰------------------------------------------------------->  32800ms - my-span",
-        ],
-        consoleDebug.args[1]
       );
     });
 
     it("should export detailed log of spans", async () => {
-      const exporter = new ConsoleExporter({ isDetailed: true });
+      const exporter = new ConsoleExporterObject();
 
       const readableSpan1: ReadableSpan = {
         attributes: {},
@@ -267,33 +232,23 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌱:🌲-🌰-🌯------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
+        {
+          "a   32800ms my-span": {
+            args: "",
+            children: {
+              "a   32800ms my-span": {
+                args: "",
+                children: { "a   32800ms my-span": { args: "" } },
+              },
+            },
+          },
+        },
         consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌲-🌰---------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[1]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌱:🌲------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[2]
       );
     });
 
     it("should export detailed log of a span without a parent", async () => {
-      const exporter = new ConsoleExporter({ isDetailed: true });
+      const exporter = new ConsoleExporterObject();
 
       const readableSpan1: ReadableSpan = {
         attributes: {},
@@ -324,17 +279,17 @@ describe("Console Exporter", () => {
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
       assert.deepStrictEqual(
-        [
-          "🌰:🌯------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
+        {
+          "a   32800ms my-span": {
+            args: "",
+          },
+        },
         consoleDebug.args[0]
       );
     });
 
-    it("should reuse icons", async () => {
-      const exporter = new ConsoleExporter({ isDetailed: true });
+    it("should increment letters", async () => {
+      const exporter = new ConsoleExporterObject();
 
       const readableSpan1 = (): ReadableSpan => {
         const traceId = Math.random().toString();
@@ -373,29 +328,18 @@ describe("Console Exporter", () => {
       });
 
       assert.strictEqual(result1.code, ExportResultCode.SUCCESS);
-      assert.deepStrictEqual(
-        [
-          "🌰:🌯------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[0]
-      );
-      assert.deepStrictEqual(
-        [
-          "🌰:🌯------------------------------------------------------->  32800ms - my-span",
-          "\n",
-          {},
-        ],
-        consoleDebug.args[101]
-      );
+      const keys = Object.keys(consoleDebug.args[0]);
+      assert.equal(keys[0][0], "a");
+      assert.equal(keys[28][0], "z");
+      assert.equal(keys[29][0], "aa");
+      assert.equal(keys[56][0], "az");
     });
   });
 
   describe(".shutdown()", () => {
     it("should do nothing", async () => {
       const consoleDebug = sinon.spy(console, "debug");
-      const exporter = new ConsoleExporter({});
+      const exporter = new ConsoleExporterObject();
       await exporter.shutdown();
       assert(consoleDebug.notCalled);
       consoleDebug.restore();
