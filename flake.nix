@@ -1,13 +1,7 @@
 {
   description = "opentelemetry-console-exporter";
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    polywrap = {
-      url = "github:consideritdone/polywrap-nix";
-      inputs.monorepo.url = "github:polywrap/monorepo/1048-tracing";
-    };
-  };
-  outputs = inputs@{ self, nixpkgs, polywrap, ... }:
+  inputs = { nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable"; };
+  outputs = inputs@{ self, nixpkgs, ... }:
     let
       eachSystem = systems: f:
         let
